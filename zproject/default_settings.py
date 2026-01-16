@@ -110,6 +110,10 @@ SOCIAL_AUTH_APPLE_TEAM = get_secret("social_auth_apple_team", development_only=T
 SOCIAL_AUTH_APPLE_SCOPE = ["name", "email"]
 SOCIAL_AUTH_APPLE_EMAIL_AS_USERNAME = True
 
+# GROQ
+GROQ_API_KEY = get_secret("groq_api_key", None)
+
+
 # Generic OpenID Connect:
 SOCIAL_AUTH_OIDC_ENABLED_IDPS: dict[str, OIDCIdPConfigDict] = {}
 SOCIAL_AUTH_OIDC_FULL_NAME_VALIDATED = False

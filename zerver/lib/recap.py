@@ -11,8 +11,8 @@ def get_unread_summary(user_profile: UserProfile) -> str:
     if not unread_ids:
         return "You're all caught up! No unread messages to recap."
 
-    # 2. Get the actual content and metadata
     # We use empty flags as we only need the text and subject for the summary
+    # 2. Get the actual content and metadata
     message_dicts = messages_for_ids(
         message_ids=unread_ids,
         user_message_flags={id: [] for id in unread_ids},
@@ -20,7 +20,8 @@ def get_unread_summary(user_profile: UserProfile) -> str:
         apply_markdown=False,
         client_gravatar=False,
         allow_empty_topic_name=True,
-        message_edit_history_visibility_policy=user_profile.realm.edit_history_visibility_policy,
+        # Corrected the attribute name below
+        message_edit_history_visibility_policy=user_profile.realm.message_edit_history_visibility_policy,
         user_profile=user_profile,
         realm=user_profile.realm,
     )
@@ -39,7 +40,7 @@ def get_unread_summary(user_profile: UserProfile) -> str:
 
     # 4. Request the completion from Groq
     # We will replace this with a secure secret later!
-    client = Groq(api_key="PASTE_YOUR_GROQ_KEY_HERE")
+    client = Groq(api_key=settings.GROQ_API_KEY)
     completion = client.chat.completions.create(
         messages=[{"role": "user", "content": prompt}],
         model="llama-3.3-70b-versatile",

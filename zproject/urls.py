@@ -433,6 +433,10 @@ v1_api_and_json_patterns = [
             {"intentionally_undocumented"},
         ),
     ),
+    rest_path(
+        "messages/recap",
+        GET=get_recap_backend,
+    ),
     rest_path("messages/render", POST=render_message_backend),
     rest_path("messages/flags", POST=update_message_flags),
     rest_path("messages/flags/narrow", POST=update_message_flags_for_narrow),

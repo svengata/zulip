@@ -5,6 +5,7 @@ requires-python = ">=3.10"
 
 [dependency-groups]
 prod = [
+  "groq",
   # Django itself
   "django[argon2]==5.2.*",
   "asgiref",

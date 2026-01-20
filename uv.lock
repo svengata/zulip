@@ -1781,6 +1781,23 @@ wheels = [
 ]
 
 [[package]]
+name = "groq"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "distro" },
+    { name = "httpx" },
+    { name = "pydantic" },
+    { name = "sniffio" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3f/12/f4099a141677fcd2ed79dcc1fcec431e60c52e0e90c9c5d935f0ffaf8c0e/groq-1.0.0.tar.gz", hash = "sha256:66cb7bb729e6eb644daac7ce8efe945e99e4eb33657f733ee6f13059ef0c25a9", size = 146068, upload-time = "2025-12-17T23:34:23.115Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4a/88/3175759d2ef30406ea721f4d837bfa1ba4339fde3b81ba8c5640a96ed231/groq-1.0.0-py3-none-any.whl", hash = "sha256:6e22bf92ffad988f01d2d4df7729add66b8fd5dbfb2154b5bbf3af245b72c731", size = 138292, upload-time = "2025-12-17T23:34:21.957Z" },
+]
+
+[[package]]
 name = "grpcio"
 version = "1.76.0"
 source = { registry = "https://pypi.org/simple" }
@@ -6345,6 +6362,7 @@ dev = [
     { name = "google-re2" },
     { name = "google-re2-stubs" },
     { name = "greenlet" },
+    { name = "groq" },
     { name = "html2text" },
     { name = "ipython" },
     { name = "jinja2" },
@@ -6481,6 +6499,7 @@ prod = [
     { name = "firebase-admin" },
     { name = "google-re2" },
     { name = "greenlet" },
+    { name = "groq" },
     { name = "html2text" },
     { name = "ipython" },
     { name = "jinja2" },
@@ -6583,6 +6602,7 @@ dev = [
     { name = "google-re2" },
     { name = "google-re2-stubs" },
     { name = "greenlet" },
+    { name = "groq" },
     { name = "html2text" },
     { name = "ipython", specifier = "<9" },
     { name = "jinja2" },
@@ -6721,6 +6741,7 @@ prod = [
     { name = "firebase-admin" },
     { name = "google-re2" },
     { name = "greenlet" },
+    { name = "groq" },
     { name = "html2text" },
     { name = "ipython", specifier = "<9" },
     { name = "jinja2" },

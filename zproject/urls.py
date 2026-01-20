@@ -28,6 +28,7 @@ from zerver.tornado.views import (
 from zerver.views.alert_words import add_alert_words, list_alert_words, remove_alert_words
 from zerver.views.antispam import get_challenge
 from zerver.views.attachments import list_by_user, remove
+
 from zerver.views.auth import (
     api_fetch_api_key,
     api_get_server_settings,
@@ -170,6 +171,7 @@ from zerver.views.registration import (
     realm_register,
     signup_send_confirm,
 )
+from zerver.views.recap import get_recap_backend
 from zerver.views.reminders import create_reminders_message_backend, delete_reminder
 from zerver.views.report import report_csp_violations
 from zerver.views.saved_snippets import (

@@ -1,6 +1,11 @@
 import $ from "jquery";
 import _ from "lodash";
 
+import * as channel from "./channel.ts";
+import * as dialog_widget from "./dialog_widget.ts";
+import * as markdown from "./markdown.ts";
+import * as ui_report from "./ui_report.ts";
+
 import * as drafts from "./drafts.ts";
 import type {Filter} from "./filter.ts";
 import {localstorage} from "./localstorage.ts";
@@ -14,6 +19,8 @@ import * as settings_config from "./settings_config.ts";
 import type {NarrowTerm} from "./state_data.ts";
 import * as ui_util from "./ui_util.ts";
 import * as unread from "./unread.ts";
+
+
 
 let last_mention_count = 0;
 const ls_key = "left_sidebar_views_state";
@@ -338,10 +345,48 @@ export function get_built_in_views(): navigation_views.BuiltInViewMetadata[] {
     return navigation_views.get_built_in_views();
 }
 
+
 export function initialize(): void {
     update_reminders_row();
     update_scheduled_messages_row();
     restore_views_state();
+
+    // The simplified Recap logic
+    $("body").on("click", "#recap_button", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Use a simple console log instead of ui_report for now
+        console.log("Generating AI Recap...");
+
+        channel.get({
+            url: "/json/messages/recap",
+            
+            success(data) {
+            // Convert Zulip markdown into an HTML string.
+            // This will also linkify your #**stream>topic@message_id** references,
+            // because markdown.parse_non_message() uses the same helpers as messages.
+            const recap_html = markdown.parse_non_message(data.recap);
+
+            dialog_widget.launch({
+                html_heading: "AI Unread Recap",
+                html_body: `
+                    <div class="recap-content" style="white-space: pre-wrap;">
+                        ${recap_html}
+                    </div>
+                `,
+                html_submit_button: "Done",
+                on_click() {},
+                focus_submit_on_open: true,
+            });
+        },
+
+
+            error() {
+                alert("Failed to fetch recap. Make sure your Groq key is in dev-secrets.conf!");
+            }
+        });
+    });
 
     $("body").on(
         "click",

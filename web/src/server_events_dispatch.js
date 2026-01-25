@@ -102,6 +102,7 @@ import {user_settings} from "./user_settings.ts";
 import * as user_status from "./user_status.ts";
 import * as user_topics from "./user_topics.ts";
 import * as user_topics_ui from "./user_topics_ui.ts";
+import * as topic_title_suggestion from "./topic_title_suggestion.ts";
 
 export function dispatch_normal_event(event) {
     const noop = function () {
@@ -1228,5 +1229,9 @@ export function dispatch_normal_event(event) {
             }
             break;
         }
+
+        case "topic_title_suggestion":
+            topic_title_suggestion.handle_topic_title_suggestion_event(event);
+            break;
     }
 }

@@ -1,0 +1,15 @@
+{{#> compose_banner . }}
+    <p class="banner_message">
+        {{#tr}}
+            This conversation seems to have drifted. Suggested topic: <strong>{{suggested_topic}}</strong>
+        {{/tr}}
+    </p>
+    <div class="banner_buttons">
+        <button class="topic-title-suggestion-rename-button button small rounded" data-message-id="{{message_id}}" data-suggested-topic="{{suggested_topic}}">
+            {{t "Rename topic" }}
+        </button>
+        <button class="topic-title-suggestion-dismiss-button button small rounded white" data-message-id="{{message_id}}">
+            {{t "Dismiss" }}
+        </button>
+    </div>
+{{/compose_banner}}

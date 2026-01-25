@@ -1091,6 +1091,19 @@ def do_send_messages(
                         visibility_policy=UserTopic.VisibilityPolicy.FOLLOWED,
                     )
 
+            # Topic Title Improver: Check for topic drift and suggest better title
+            # This runs asynchronously via queue to avoid blocking message sending
+            topic_name = send_request.message.topic_name()
+            if topic_name and topic_name.strip():  # Skip empty topics
+                topic_improver_event = {
+                    "message_id": send_request.message.id,
+                    "stream_id": send_request.stream.id,
+                    "realm_id": realm_id,
+                    "topic_name": topic_name,
+                    "message_content": send_request.message.content,
+                }
+                queue_event_on_commit("topic_title_improver", topic_improver_event)
+
         # Deliver events to the real-time push system, as well as
         # enqueuing any additional processing triggered by the message.
         wide_message_dict = MessageDict.wide_dict(send_request.message, realm_id)

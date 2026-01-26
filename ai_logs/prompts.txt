@@ -1,3 +1,35 @@
+Prompts to Gemini:
+
+PROMPT 1:
+I am building a recap feature for the Zulip client. 
+I need to create a backend endpoint that identifies all unread messages for the current user. 
+Please help me write the Python logic for zerver/views/recap.py to query the UserMessage model specifically for messages where the read flag is false, and extract the content for processing.
+
+PROMPT 2:
+I plan to use the Groq API to summarize these unread messages. 
+How should I securely integrate the API key into the Zulip environment? 
+I want to ensure the key is stored in dev-secrets.conf and accessed via get_secret in the backend logic rather than being hardcoded in the repository.
+
+
+PROMPT 3:
+The goal of the recap is to allow users to jump to specific messages. 
+Please help me structure the LLM prompt so that it returns summaries using Zulip's internal navigation syntax: #**stream_name>topic_name@message_id**. 
+The response needs to be structured so the frontend can easily parse these as deep links.
+
+
+PROMPT 4:
+I need to add a 'Recap' button to the Zulip sidebar under the 'VIEWS' section. 
+Which Handlebars template should I modify, and how do I update web/src/left_sidebar_navigation_area.ts to handle the click event and make the asynchronous request to my new /json/messages/recap endpoint?
+
+
+
+PROMPT 5:
+The recap text is being returned to the frontend, but the Zulip navigation links are appearing as plain text. 
+How do I use the markdown.parse_non_message utility to convert that raw string into functional HTML links before displaying the result in a dialog_widget popup? 
+I want to ensure the links trigger the native chat-feed navigation.
+
+
+
 Prompts to cursor:
 
 

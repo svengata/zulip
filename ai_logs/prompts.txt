@@ -1,0 +1,187 @@
+Prompts to cursor:
+
+
+PROMPT 1:
+We want to add a new capability called Topic Title Improver.
+
+What it should do:
+When a conversation in a Zulip topic starts to veer away from the original subject—or clearly branches into a new line of discussion—the system should recognize this and propose a more accurate topic title, generated via an LLM.
+
+When it runs:
+The check should be triggered right after a message is successfully posted.
+
+Design requirements:
+
+Minimal added latency to message sending
+
+Keep operational cost low
+
+Avoid calling the LLM for every message
+
+Must work at scale across many streams and users
+
+The initial version can be simple as long as it works
+
+Initial investigation tasks:
+Determine:
+
+Which backend components handle message submission
+
+Where post-send hooks or signals can be attached for lightweight processing
+
+How and where stream and topic information is accessible at message-send time
+
+For now, focus only on describing what you find. Do not implement anything yet.
+
+
+
+PROMPT 2:
+Build a lightweight topic drift detector that does not rely on an LLM.
+
+Functionality:
+After each message is posted, quickly assess whether the discussion may be diverging from the current topic.
+
+Constraints:
+
+Runs synchronously or immediately post-send
+
+Uses only data already available locally (no external calls)
+
+Outputs a single boolean value: possible_drift
+
+Proposed approach (can be adjusted):
+
+Retrieve the most recent N messages (around 5–10) from the same stream and topic
+
+Measure how closely the new message aligns with the topic title
+
+If the similarity is low, and recent messages show the same pattern, treat this as a potential drift
+
+Implementation guidance:
+
+Encapsulate the logic in a small utility module (e.g., zerver/lib/topic_drift.py)
+
+Optimize for speed using simple techniques like token overlap, basic string matching, or manual cosine similarity
+
+Do not introduce ML frameworks or heavy dependencies
+
+
+
+PROMPT 3:
+Introduce an LLM-powered topic title suggestion step.
+
+Activation condition:
+This logic should run only when detect_topic_drift(...) indicates a potential drift.
+
+Operational constraints:
+
+Use a lightweight, low-cost language model (e.g., gpt-3.5-turbo or similar)
+
+Provide the model with only a small window of recent context (up to ~10 messages)
+
+Enforce strict timeouts
+
+Handle failures safely (no crashes, silent fallback)
+
+Backend structure:
+
+Implement this as a helper utility in zerver/lib/topic_title_llm.py
+
+Expose a function with the following interface:
+
+suggest_topic_title(topic_name: str, messages: list[dict]) -> str | None
+
+Prompt design guidelines:
+
+Ask the model to generate exactly one short, clear topic title
+
+Explicitly instruct the model to return only the title text
+
+No formatting, markdown, or explanation in the output
+
+Important:
+This feature should not rename topics automatically.
+It should only generate and return a suggested title for later use.
+
+
+
+PROMPT 4:
+
+Wire the topic drift system into the message delivery path.
+
+Expected behavior:
+Once a message has been successfully persisted, the system should evaluate whether the conversation may be drifting from the current topic.
+
+Processing steps:
+
+Tap into the backend path responsible for handling message submission
+
+After the message is saved:
+
+Retrieve a small window of recent messages from the same stream and topic
+
+Invoke detect_topic_drift on this context
+
+If drift is flagged, generate a candidate title via suggest_topic_title
+
+Performance constraints:
+
+Message delivery must never wait on an LLM response
+
+Prefer a background or fire-and-forget execution model if one exists
+
+If introducing async infrastructure is too costly, keep the logic inline but extremely lightweight
+
+Handling results:
+
+Store the proposed title temporarily (for example, attach it to the response payload or place it in a cache)
+
+Do not apply the title automatically
+
+Investigation / implementation notes:
+Determine:
+
+Which backend view or handler processes outgoing messages
+
+The safest point after persistence to insert this logic
+
+The minimal amount of code needed to prove the integration works
+
+
+
+
+PROMPT 5:
+Add a basic frontend experience for surfacing topic title suggestions.
+
+User-facing behavior:
+If the system detects that a topic may have drifted, the user should be shown a proposed new topic title right after sending their message.
+
+Timing:
+The suggestion should appear immediately following message submission.
+
+User actions:
+From the UI, the user should be able to:
+
+Apply the suggested title (which renames the topic)
+
+Dismiss or ignore the suggestion
+
+UI concept:
+
+Display a lightweight inline element (e.g., banner, tooltip, or popover) near the compose area
+
+Message copy example:
+“This discussion appears to have drifted. Suggested topic: <title>”
+
+Include a clear action button such as “Rename topic”
+
+Implementation notes:
+
+Follow existing Zulip frontend conventions and components
+
+Reuse an existing backend endpoint for renaming topics
+
+Keep visual design simple and unobtrusive
+
+Prioritize clarity and ease of use over completeness or polish
+
